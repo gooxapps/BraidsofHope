@@ -1,34 +1,62 @@
 import fs from 'fs';
 import path from 'path';
-import Database from 'better-sqlite3';
+import type Database from 'better-sqlite3';
 import { Pool } from 'pg';
 
 export type DbDialect = 'postgres' | 'sqlite';
+
+function resolvePostgresUrl(): string {
+  return (
+    process.env.DATABASE_URL?.trim() ||
+    process.env.POSTGRES_URL?.trim() ||
+    process.env.NEON_DATABASE_URL?.trim() ||
+    ''
+  );
+}
 
 class DualDatabase {
   public dialect: DbDialect;
   private pgPool: Pool | null = null;
   private sqliteDb: Database.Database | null = null;
+  private sqliteInitPromise: Promise<Database.Database> | null = null;
 
   constructor() {
-    const dbUrl = process.env.DATABASE_URL?.trim();
+    const dbUrl = resolvePostgresUrl();
     if (dbUrl) {
       this.dialect = 'postgres';
       this.pgPool = new Pool({
         connectionString: dbUrl,
         ssl: dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1') ? false : { rejectUnauthorized: false },
+        max: 5,
+        idleTimeoutMillis: 10000,
+        connectionTimeoutMillis: 10000,
       });
     } else {
       this.dialect = 'sqlite';
-      const dataDir = path.resolve(process.cwd(), 'data');
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
-      }
-      const dbPath = path.join(dataDir, 'braidsofhope.db');
-      this.sqliteDb = new Database(dbPath);
-      this.sqliteDb.pragma('journal_mode = WAL');
-      this.sqliteDb.pragma('foreign_keys = ON');
     }
+  }
+
+  private async ensureSqlite(): Promise<Database.Database> {
+    if (this.sqliteDb) return this.sqliteDb;
+    if (!this.sqliteInitPromise) {
+      this.sqliteInitPromise = (async () => {
+        const mod = await import('better-sqlite3');
+        const BetterSqlite3 = mod.default;
+        const baseDir = process.env.VERCEL
+          ? path.resolve('/tmp', 'braidsofhope-data')
+          : path.resolve(process.cwd(), 'data');
+        if (!fs.existsSync(baseDir)) {
+          fs.mkdirSync(baseDir, { recursive: true });
+        }
+        const dbPath = path.join(baseDir, 'braidsofhope.db');
+        const instance = new BetterSqlite3(dbPath);
+        instance.pragma('journal_mode = WAL');
+        instance.pragma('foreign_keys = ON');
+        this.sqliteDb = instance;
+        return instance;
+      })();
+    }
+    return this.sqliteInitPromise;
   }
 
   private convertSqlAndParamsForSqlite(sql: string, params: unknown[]): { sql: string; params: unknown[] } {
@@ -54,9 +82,10 @@ class DualDatabase {
       const res = await this.pgPool.query(sql, cleanParams);
       return res.rows as T[];
     }
-    if (this.sqliteDb) {
+    if (this.dialect === 'sqlite') {
+      const sqlite = await this.ensureSqlite();
       const { sql: sqSql, params: sqParams } = this.convertSqlAndParamsForSqlite(sql, params);
-      const stmt = this.sqliteDb.prepare(sqSql);
+      const stmt = sqlite.prepare(sqSql);
       const trimmed = sqSql.trim().toUpperCase();
       if (trimmed.startsWith('SELECT') || trimmed.startsWith('PRAGMA') || trimmed.includes('RETURNING')) {
         return stmt.all(...sqParams) as T[];
@@ -78,9 +107,10 @@ class DualDatabase {
       const res = await this.pgPool.query(sql, cleanParams);
       return { changes: res.rowCount ?? 0 };
     }
-    if (this.sqliteDb) {
+    if (this.dialect === 'sqlite') {
+      const sqlite = await this.ensureSqlite();
       const { sql: sqSql, params: sqParams } = this.convertSqlAndParamsForSqlite(sql, params);
-      const info = this.sqliteDb.prepare(sqSql).run(...sqParams);
+      const info = sqlite.prepare(sqSql).run(...sqParams);
       return { changes: info.changes };
     }
     throw new Error('Database not initialized');
@@ -91,8 +121,9 @@ class DualDatabase {
       await this.pgPool.query(sql);
       return;
     }
-    if (this.sqliteDb) {
-      this.sqliteDb.exec(sql);
+    if (this.dialect === 'sqlite') {
+      const sqlite = await this.ensureSqlite();
+      sqlite.exec(sql);
       return;
     }
   }

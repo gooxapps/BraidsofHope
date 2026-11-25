@@ -12,11 +12,17 @@ const ALLOWED_MIME_EXTENSIONS: Record<string, string> = {
   'image/vnd.microsoft.icon': '.ico',
 };
 
-export const UPLOADS_DIR = path.resolve(process.cwd(), 'public', 'uploads');
+export const UPLOADS_DIR = process.env.VERCEL
+  ? path.resolve('/tmp', 'braidsofhope-uploads')
+  : path.resolve(process.cwd(), 'public', 'uploads');
 
 export function ensureUploadsDir(): void {
-  if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(UPLOADS_DIR)) {
+      fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    }
+  } catch {
+    // Read-only filesystem guard when running on serverless without local uploads
   }
 }
 

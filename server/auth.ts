@@ -3,10 +3,18 @@ import type { NextFunction, Request, Response } from 'express';
 import { asBool, db } from './db.ts';
 import type { ModuleKey } from './seed.ts';
 
-const IN_MEMORY_FALLBACK_SECRET = crypto.randomBytes(32).toString('hex');
+const RUNTIME_FALLBACK_SECRET = crypto
+  .createHash('sha256')
+  .update(
+    process.env.DATABASE_URL?.trim() ||
+      process.env.POSTGRES_URL?.trim() ||
+      process.env.ADMIN_BOOTSTRAP_PASSCODE?.trim() ||
+      'braidsofhope-runtime-session-seed'
+  )
+  .digest('hex');
 
 export function getSessionSecret(): string {
-  return process.env.SESSION_SECRET?.trim() || IN_MEMORY_FALLBACK_SECRET;
+  return process.env.SESSION_SECRET?.trim() || RUNTIME_FALLBACK_SECRET;
 }
 
 export function isAdvancedDonationsUnlocked(): boolean {
