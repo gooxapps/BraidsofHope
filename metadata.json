@@ -1,0 +1,6 @@
+{
+  "name": "BraidsofHope",
+  "description": "Registered Canadian charitable organization website and comprehensive administration dashboard for managing branding, media, pages, programmes, campaigns, volunteers, donations, and community outreach.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
