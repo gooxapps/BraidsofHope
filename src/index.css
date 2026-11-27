@@ -2,11 +2,11 @@
 
 @layer base {
   :root {
-    --brand-plum: #4A0E36;
-    --brand-plum-deep: #3B0A2B;
-    --brand-teal: #0E7C7B;
-    --brand-orange: #F38B1C;
-    --brand-cream: #FAF5EE;
+    --brand-plum: #52154E;
+    --brand-plum-deep: #3B0D37;
+    --brand-teal: #0099A8;
+    --brand-orange: #F57C00;
+    --brand-cream: #FFFFFF;
     --font-display: 'Playfair Display', Georgia, serif;
     --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
@@ -15,7 +15,7 @@
   body {
     font-family: var(--font-body);
     background-color: var(--brand-cream);
-    color: #241420;
+    color: #1F2937;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

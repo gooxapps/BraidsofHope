@@ -177,32 +177,29 @@ const ProgrammeEmblem: React.FC<{ slug: string; iconName: string }> = ({ slug, i
   return <Icon className="w-8 h-8 text-[#4A0E36]" />;
 };
 
-const RaisedHandsGraphic: React.FC = () => (
-  <svg viewBox="0 0 110 110" className="w-24 h-24 shrink-0" fill="none" aria-hidden="true">
-    <circle cx="55" cy="55" r="46" stroke="white" strokeOpacity="0.28" strokeWidth="1.5" />
-    <circle cx="55" cy="55" r="38" stroke="white" strokeOpacity="0.18" strokeWidth="1.5" />
-    {/* Back raised hand */}
+const RaisedHandsGraphic: React.FC<{ color?: string }> = ({ color = '#0099A8' }) => (
+  <svg viewBox="0 0 110 110" className="w-20 h-20 shrink-0" fill="none" aria-hidden="true">
+    <circle cx="55" cy="55" r="46" stroke={color} strokeOpacity="0.22" strokeWidth="1.5" />
+    <circle cx="55" cy="55" r="38" stroke={color} strokeOpacity="0.14" strokeWidth="1.5" />
     <path
       d="M42 74 L42 46 C42 44 45 44 45 46 L45 55 L46 34 C46 32 49 32 49 34 L49 54 L51 31 C51 29 54 29 54 31 L54 54 L56 35 C56 33 59 33 59 35 L59 58 C61 55 64 56 63 59 L60 72"
-      stroke="white"
+      stroke={color}
       strokeWidth="2.4"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    {/* Front raised hand */}
     <path
       d="M52 82 L52 57 C52 55 55 55 55 57 L55 64 L57 44 C57 42 60 42 60 44 L60 63 L62 41 C62 39 65 39 65 41 L65 63 L67 46 C67 44 70 44 70 46 L70 67 C73 64 76 66 74 69 L69 83"
-      stroke="white"
+      stroke={color}
       strokeWidth="2.4"
       strokeLinecap="round"
       strokeLinejoin="round"
-      fill="#0E7C7B"
-      fillOpacity="0.45"
+      fill="#FFFFFF"
+      fillOpacity="0.7"
     />
-    {/* Left smaller hand */}
     <path
       d="M27 72 L27 52 C27 50.5 29.5 50.5 29.5 52 L29.5 58 L31 44 C31 42.5 33.5 42.5 33.5 44 L33.5 58 L35 46 C35 44.5 37.5 44.5 37.5 46 L37.5 64"
-      stroke="white"
+      stroke={color}
       strokeWidth="2.2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -210,26 +207,26 @@ const RaisedHandsGraphic: React.FC = () => (
   </svg>
 );
 
-const HandshakeGraphic: React.FC = () => (
-  <svg viewBox="0 0 110 110" className="w-24 h-24 shrink-0" fill="none" aria-hidden="true">
-    <circle cx="55" cy="55" r="46" stroke="white" strokeOpacity="0.28" strokeWidth="1.5" />
+const HandshakeGraphic: React.FC<{ color?: string }> = ({ color = '#F57C00' }) => (
+  <svg viewBox="0 0 110 110" className="w-20 h-20 shrink-0" fill="none" aria-hidden="true">
+    <circle cx="55" cy="55" r="46" stroke={color} strokeOpacity="0.22" strokeWidth="1.5" />
     <path
       d="M18 47 L33 34 L48 43 L62 34 L77 45 L91 37"
-      stroke="white"
+      stroke={color}
       strokeWidth="2.4"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M20 53 L36 69 C38 71 42 71 44 69 L48 65 M29 58 L41 72 C43 74 46 74 48 72 L52 68 M37 64 L46 75 C48 77 51 77 53 75 L57 70"
-      stroke="white"
+      stroke={color}
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M47 43 L38 51 C36 53 38 57 42 56 L51 50 L68 65 C71 67 75 64 73 61 L59 48 M65 67 L74 62 C77 60 79 56 77 54 L63 40 M76 58 L89 48"
-      stroke="white"
+      stroke={color}
       strokeWidth="2.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -238,11 +235,28 @@ const HandshakeGraphic: React.FC = () => (
 );
 
 const PASTEL_WORK_STYLES = [
-  'bg-gradient-to-b from-[#FCEFE3] to-[#F7DEC7] border-[#EED2B7]',
-  'bg-gradient-to-b from-[#E5F4F3] to-[#CFECE9] border-[#BBDAD7]',
-  'bg-gradient-to-b from-[#F6E8F0] to-[#EAD3E1] border-[#DEC1D2]',
-  'bg-gradient-to-b from-[#FCF2DC] to-[#F6E4BE] border-[#E8D2A4]',
+  'bg-gradient-to-b from-[#FFF9F2] to-[#FFEDD5] border-[#FED7AA]',
+  'bg-gradient-to-b from-[#F2FCFD] to-[#D9F4F7] border-[#A5E8EF]',
+  'bg-gradient-to-b from-[#FDF5FB] to-[#F5E1EF] border-[#E7C6DD]',
+  'bg-gradient-to-b from-[#FEFCE8] to-[#FEF3C7] border-[#FDE68A]',
 ];
+
+function isLightBackgroundHex(hex?: string): boolean {
+  if (!hex || !hex.startsWith('#')) return true;
+  const clean = hex.slice(1);
+  if (clean.length !== 6 && clean.length !== 3) return true;
+  const full =
+    clean.length === 3
+      ? clean
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : clean;
+  const r = parseInt(full.slice(0, 2), 16);
+  const g = parseInt(full.slice(2, 4), 16);
+  const b = parseInt(full.slice(4, 6), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6;
+}
 
 // ---------------- HOME VIEW ----------------
 const HomeView: React.FC<{
@@ -253,6 +267,10 @@ const HomeView: React.FC<{
   const { homepageSections, programmes, testimonials, impactStories, campaigns, donationsUnlocked, branding } = data;
   const extraFeaturedCampaigns = campaigns.filter((c) => c.is_featured && !c.is_christmas_programme);
   const christmasCampaign = campaigns.find((c) => c.is_christmas_programme) || campaigns[0];
+  const primaryColor = branding?.primary_color || '#52154E';
+  const secondaryColor = branding?.secondary_color || '#0099A8';
+  const accentColor = branding?.accent_color || '#F57C00';
+  const pageBg = branding?.background_color || '#FFFFFF';
 
   const renderHeroTitle = (title: string) => {
     const words = title.trim().split(/\s+/);
@@ -262,7 +280,9 @@ const HomeView: React.FC<{
     return (
       <>
         {lead}{' '}
-        <span className="italic font-bold text-[#F59E0B]">{lastWord}</span>
+        <span className="italic font-bold" style={{ color: accentColor }}>
+          {lastWord}
+        </span>
       </>
     );
   };
@@ -272,14 +292,95 @@ const HomeView: React.FC<{
       {homepageSections.map((sec) => {
         if (sec.section_type === 'hero') {
           const cfg = sec.config as { quoteText?: string };
-          const primaryBg = sec.bg_color || branding?.primary_color || '#4A0E36';
+          const heroBg = sec.bg_color || '#FFFFFF';
+          const lightHero = isLightBackgroundHex(heroBg);
+
+          if (lightHero) {
+            return (
+              <section
+                key={sec.id}
+                className="relative overflow-hidden border-b border-stone-100"
+                style={{ backgroundColor: heroBg }}
+              >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                  <div className="lg:col-span-6 space-y-4">
+                    <h1
+                      className="font-display text-4xl sm:text-5xl lg:text-[52px] font-bold leading-[1.08] tracking-tight text-balance"
+                      style={{ color: primaryColor }}
+                    >
+                      {renderHeroTitle(sec.title)}
+                    </h1>
+                    {sec.subtitle && (
+                      <p className="font-display italic text-xl sm:text-2xl font-medium" style={{ color: secondaryColor }}>
+                        {sec.subtitle}
+                      </p>
+                    )}
+                    {sec.body_text && (
+                      <p className="text-sm sm:text-base text-stone-600 leading-relaxed max-w-lg pt-1">
+                        {sec.body_text}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap items-center gap-3.5 pt-3">
+                      {sec.cta_label && (
+                        <a
+                          href={sec.cta_link || '/donate'}
+                          onClick={(e) => go(e, sec.cta_link || '/donate')}
+                          className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white shadow-md hover:brightness-105 transition-all"
+                          style={{
+                            background: `linear-gradient(135deg, ${accentColor} 0%, #FB923C 100%)`,
+                          }}
+                        >
+                          <Heart className="w-4 h-4 fill-current" />
+                          <span>{sec.cta_label}</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </a>
+                      )}
+                      {sec.secondary_cta_label && (
+                        <a
+                          href={sec.secondary_cta_link || '/get-involved'}
+                          onClick={(e) => go(e, sec.secondary_cta_link || '/get-involved')}
+                          className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold border-2 bg-white hover:bg-stone-50 transition-colors"
+                          style={{ borderColor: `${primaryColor}35`, color: primaryColor }}
+                        >
+                          <span>{sec.secondary_cta_label}</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-6 relative">
+                    <div className="relative rounded-3xl overflow-hidden shadow-xl border border-stone-200/80 aspect-[16/10] bg-white">
+                      <SafeImage
+                        src={sec.image_url}
+                        alt={sec.title}
+                        className="w-full h-full object-cover object-center"
+                        fallbackLabel="BraidsofHope Community"
+                      />
+                      {cfg?.quoteText && (
+                        <div className="hidden sm:block absolute right-4 bottom-4 max-w-[270px] rounded-2xl bg-white/92 backdrop-blur-sm border border-white/80 shadow-md px-4 py-2.5 text-right">
+                          <p className="font-display italic text-xs sm:text-sm leading-snug" style={{ color: primaryColor }}>
+                            {cfg.quoteText}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute inset-x-0 bottom-0 z-10 pointer-events-none">
+                  <WovenRibbonDivider className="w-full h-12 sm:h-16 block" bottomColor={pageBg} />
+                </div>
+              </section>
+            );
+          }
+
           return (
             <section
               key={sec.id}
               className="relative overflow-hidden text-white"
-              style={{ backgroundColor: primaryBg }}
+              style={{ backgroundColor: heroBg }}
             >
-              {/* Full-bleed children hero photograph faded into deep plum */}
               <div className="absolute inset-y-0 right-0 w-full lg:w-[70%] pointer-events-none">
                 <SafeImage
                   src={sec.image_url}
@@ -290,20 +391,14 @@ const HomeView: React.FC<{
                 <div
                   className="absolute inset-0 hidden lg:block"
                   style={{
-                    background: `linear-gradient(90deg, ${primaryBg} 0%, ${primaryBg} 12%, rgba(74,14,54,0.88) 32%, rgba(74,14,54,0.34) 55%, rgba(74,14,54,0.06) 80%, rgba(74,14,54,0.18) 100%)`,
-                  }}
-                />
-                <div
-                  className="absolute inset-0 lg:hidden"
-                  style={{
-                    background: `linear-gradient(180deg, rgba(74,14,54,0.88) 0%, rgba(74,14,54,0.72) 55%, rgba(74,14,54,0.85) 100%)`,
+                    background: `linear-gradient(90deg, ${heroBg} 0%, ${heroBg} 12%, rgba(82,21,78,0.85) 34%, rgba(82,21,78,0.28) 58%, rgba(82,21,78,0.06) 85%, rgba(82,21,78,0.16) 100%)`,
                   }}
                 />
               </div>
 
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 lg:pt-16 lg:pb-28 relative z-10">
                 <div className="max-w-xl space-y-4">
-                  <h1 className="font-display text-4xl sm:text-5xl lg:text-[54px] font-bold leading-[1.08] tracking-tight text-balance drop-shadow-sm">
+                  <h1 className="font-display text-4xl sm:text-5xl lg:text-[54px] font-bold leading-[1.08] tracking-tight text-balance">
                     {renderHeroTitle(sec.title)}
                   </h1>
                   {sec.subtitle && (
@@ -323,7 +418,7 @@ const HomeView: React.FC<{
                         onClick={(e) => go(e, sec.cta_link || '/donate')}
                         className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white shadow-lg hover:brightness-105 transition-all"
                         style={{
-                          background: `linear-gradient(135deg, ${branding?.accent_color || '#F38B1C'} 0%, #F59E0B 100%)`,
+                          background: `linear-gradient(135deg, ${accentColor} 0%, #FB923C 100%)`,
                         }}
                       >
                         <Heart className="w-4 h-4 fill-current" />
@@ -335,7 +430,7 @@ const HomeView: React.FC<{
                       <a
                         href={sec.secondary_cta_link || '/get-involved'}
                         onClick={(e) => go(e, sec.secondary_cta_link || '/get-involved')}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white border border-[#F5B700]/75 bg-[#3B0A2B]/55 hover:bg-[#3B0A2B]/85 transition-colors"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white border border-white/60 hover:bg-white/10 transition-colors"
                       >
                         <span>{sec.secondary_cta_label}</span>
                         <ArrowRight className="w-4 h-4" />
@@ -343,25 +438,10 @@ const HomeView: React.FC<{
                     )}
                   </div>
                 </div>
-
-                {/* Bottom-right script quote overlay matching reference */}
-                {cfg?.quoteText && (
-                  <div className="hidden md:block absolute right-6 lg:right-8 bottom-20 lg:bottom-24 max-w-[270px] text-right">
-                    <div className="rounded-xl bg-black/25 backdrop-blur-[2px] px-4 py-2.5">
-                      <p className="font-display italic text-[17px] leading-snug text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
-                        {cfg.quoteText}
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
 
-              {/* Flowing woven ribbon edge */}
               <div className="absolute inset-x-0 bottom-0 z-10 pointer-events-none">
-                <WovenRibbonDivider
-                  className="w-full h-14 sm:h-20 block"
-                  bottomColor={branding?.background_color || '#FAF5EE'}
-                />
+                <WovenRibbonDivider className="w-full h-14 sm:h-20 block" bottomColor={pageBg} />
               </div>
             </section>
           );
@@ -370,18 +450,20 @@ const HomeView: React.FC<{
         if (sec.section_type === 'values') {
           const items = (sec.config?.items as Array<{ title: string; subtitle: string; icon?: string }>) || [];
           return (
-            <section key={sec.id} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 sm:-mt-12 relative z-20 mb-8">
-              <div className="bg-[#FDF9F3]/95 backdrop-blur-sm border border-[#EADBC8] rounded-2xl shadow-[0_14px_34px_-12px_rgba(74,14,54,0.16)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-x divide-[#E6DBD0]">
+            <section key={sec.id} className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 sm:-mt-10 relative z-20 mb-8">
+              <div className="bg-white border border-stone-200/90 rounded-2xl shadow-[0_12px_30px_-10px_rgba(15,23,42,0.08)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-x divide-stone-200">
                 {items.map((item, idx) => {
                   const Icon = ICON_MAP[item.icon || 'Heart'] || Heart;
-                  const iconColor = idx === 0 ? 'text-[#F38B1C]' : 'text-[#0E7C7B]';
+                  const iconColor = idx === 0 ? accentColor : secondaryColor;
                   return (
                     <div key={idx} className="px-5 py-4 sm:py-5 flex items-center justify-center sm:justify-start gap-3.5">
-                      <div className={`w-10 h-10 flex items-center justify-center shrink-0 ${iconColor}`}>
+                      <div className="w-10 h-10 flex items-center justify-center shrink-0" style={{ color: iconColor }}>
                         <Icon className="w-8 h-8 stroke-[1.9]" />
                       </div>
                       <div className="min-w-0">
-                        <div className="font-display font-bold text-[#4A0E36] text-lg leading-tight">{item.title}</div>
+                        <div className="font-display font-bold text-lg leading-tight" style={{ color: primaryColor }}>
+                          {item.title}
+                        </div>
                         <div className="text-xs text-stone-600 mt-0.5">{item.subtitle}</div>
                       </div>
                     </div>
@@ -398,38 +480,38 @@ const HomeView: React.FC<{
           return (
             <section
               key={sec.id}
-              className="py-6 sm:py-8"
-              style={{ backgroundColor: sec.bg_color || undefined }}
+              className="py-8 sm:py-10"
+              style={{ backgroundColor: sec.bg_color || pageBg }}
             >
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-center lg:divide-x lg:divide-[#E5DDD2]">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-center lg:divide-x lg:divide-stone-200">
                 {/* Left: Our Story */}
                 <div className="lg:col-span-6 lg:pr-8 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
                   <div className="sm:col-span-6 relative">
-                    <div className="relative rounded-2xl overflow-hidden shadow-md aspect-[4/3] bg-stone-200">
+                    <div className="relative rounded-2xl overflow-hidden shadow-md border border-stone-100 aspect-[4/3] bg-stone-100">
                       <SafeImage src={sec.image_url} alt={sec.title} className="w-full h-full object-cover" />
-                      {/* Signature curved teal/orange ribbon edge matching reference */}
                       <svg
                         viewBox="0 0 60 200"
                         preserveAspectRatio="none"
                         className="pointer-events-none absolute right-0 inset-y-0 h-full w-8"
                         aria-hidden="true"
                       >
-                        <path d="M52,0 C18,55 18,145 52,200 L60,200 L60,0 Z" fill="#0E7C7B" opacity="0.92" />
-                        <path d="M56,0 C24,55 24,145 56,200 L60,200 L60,0 Z" fill="#F38B1C" opacity="0.95" />
+                        <path d="M52,0 C18,55 18,145 52,200 L60,200 L60,0 Z" fill="#0099A8" opacity="0.92" />
+                        <path d="M56,0 C24,55 24,145 56,200 L60,200 L60,0 Z" fill="#F57C00" opacity="0.95" />
                       </svg>
                     </div>
                   </div>
                   <div className="sm:col-span-6 space-y-3.5">
-                    <h2 className="font-display text-3xl sm:text-[36px] font-bold text-[#4A0E36] leading-tight">
+                    <h2 className="font-display text-3xl sm:text-[36px] font-bold leading-tight" style={{ color: primaryColor }}>
                       {sec.title}
                     </h2>
-                    <p className="text-stone-700 leading-relaxed text-sm">{sec.body_text}</p>
+                    <p className="text-stone-600 leading-relaxed text-sm">{sec.body_text}</p>
                     {sec.cta_label && (
                       <div className="pt-1">
                         <a
                           href={sec.cta_link || '/about-us'}
                           onClick={(e) => go(e, sec.cta_link || '/about-us')}
-                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-[#4A0E36] to-[#6B184F] shadow-sm hover:opacity-95 transition-opacity"
+                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-white shadow-sm hover:opacity-95 transition-opacity"
+                          style={{ backgroundColor: primaryColor }}
                         >
                           <span>{sec.cta_label}</span>
                           <ArrowRight className="w-4 h-4" />
@@ -439,13 +521,13 @@ const HomeView: React.FC<{
                   </div>
                 </div>
 
-                {/* Right: Our Work Programmes (4 pastel vertical cards) */}
+                {/* Right: Our Work Programmes (4 bright pastel vertical cards) */}
                 <div className="lg:col-span-6 lg:pl-8 space-y-4">
                   <div>
-                    <h2 className="font-display text-3xl sm:text-[36px] font-bold text-[#0E7C7B] leading-tight">
+                    <h2 className="font-display text-3xl sm:text-[36px] font-bold leading-tight" style={{ color: secondaryColor }}>
                       {workHeading}
                     </h2>
-                    <p className="text-sm text-stone-700 mt-0.5">{workSub}</p>
+                    <p className="text-sm text-stone-600 mt-0.5">{workSub}</p>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {programmes.slice(0, 4).map((prog, idx) => (
@@ -458,7 +540,7 @@ const HomeView: React.FC<{
                         }`}
                       >
                         <ProgrammeEmblem slug={prog.slug} iconName={prog.icon_name} />
-                        <span className="text-xs sm:text-[13px] font-semibold text-[#3B0A2B] leading-snug">
+                        <span className="text-xs sm:text-[13px] font-semibold text-stone-800 leading-snug">
                           {prog.title}
                         </span>
                       </a>
@@ -481,18 +563,18 @@ const HomeView: React.FC<{
                   <SafeImage src={sec.image_url} alt={sec.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="lg:col-span-7 space-y-5">
-                  <h2 className="font-display text-3xl font-bold text-[#4A0E36]">{sec.title}</h2>
-                  {welcomeMsg && <p className="text-stone-700 leading-relaxed">{welcomeMsg}</p>}
+                  <h2 className="font-display text-3xl font-bold" style={{ color: primaryColor }}>{sec.title}</h2>
+                  {welcomeMsg && <p className="text-stone-600 leading-relaxed">{welcomeMsg}</p>}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     {mission && (
-                      <div className="p-5 rounded-xl bg-[#FAF5EE] border border-stone-200 space-y-1.5">
-                        <div className="text-xs font-semibold tracking-wide text-[#0E7C7B]">Our Mission</div>
+                      <div className="p-5 rounded-xl bg-[#F8FAFC] border border-stone-200 space-y-1.5">
+                        <div className="text-xs font-semibold tracking-wide" style={{ color: secondaryColor }}>Our Mission</div>
                         <p className="text-sm text-stone-700 leading-relaxed">{mission}</p>
                       </div>
                     )}
                     {vision && (
-                      <div className="p-5 rounded-xl bg-[#FAF5EE] border border-stone-200 space-y-1.5">
-                        <div className="text-xs font-semibold tracking-wide text-[#4A0E36]">Our Vision</div>
+                      <div className="p-5 rounded-xl bg-[#F8FAFC] border border-stone-200 space-y-1.5">
+                        <div className="text-xs font-semibold tracking-wide" style={{ color: primaryColor }}>Our Vision</div>
                         <p className="text-sm text-stone-700 leading-relaxed">{vision}</p>
                       </div>
                     )}
@@ -513,49 +595,40 @@ const HomeView: React.FC<{
               color: string;
             }>) || [];
           return (
-            <section key={sec.id} className="pt-4 pb-12" style={{ backgroundColor: sec.bg_color || undefined }}>
+            <section key={sec.id} className="pt-4 pb-12" style={{ backgroundColor: sec.bg_color || pageBg }}>
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                   {cards.map((card, i) => {
-                    // Card 0: Christmas Programme Plum Card with blended photo + amber CTA
+                    // Card 0: Bright soft-plum card with framed Christmas photo + CTA
                     if (i === 0) {
                       const poster = christmasCampaign?.poster_url || sec.image_url;
                       return (
                         <div
                           key={i}
-                          className="relative rounded-2xl overflow-hidden text-white shadow-md min-h-[205px] flex items-center"
-                          style={{
-                            background: `linear-gradient(125deg, ${card.color || '#4A0E36'} 0%, #6A174D 100%)`,
-                          }}
+                          className="rounded-2xl bg-[#FDF7FB] border border-[#EAD5E3] shadow-xs hover:shadow-md transition-shadow min-h-[205px] p-5 flex items-center gap-4"
                         >
                           {poster && (
-                            <div className="absolute inset-y-0 left-0 w-[44%] pointer-events-none">
+                            <div className="w-28 sm:w-32 h-36 rounded-xl overflow-hidden border border-[#EAD5E3] shrink-0 bg-white">
                               <SafeImage
                                 src={poster}
                                 alt={card.title}
                                 className="w-full h-full object-cover"
                               />
-                              <div
-                                className="absolute inset-0"
-                                style={{
-                                  background: `linear-gradient(90deg, rgba(74,14,54,0.08) 0%, rgba(74,14,54,0.55) 72%, ${card.color || '#4A0E36'} 100%)`,
-                                }}
-                              />
                             </div>
                           )}
-                          <div className="relative z-10 ml-auto w-[65%] p-6 space-y-2.5">
-                            <h3 className="font-display text-2xl font-bold leading-tight">{card.title}</h3>
-                            <p className="text-xs sm:text-[13px] text-white/90 leading-relaxed line-clamp-3">
+                          <div className="space-y-2.5 flex-1">
+                            <h3 className="font-display text-xl font-bold leading-tight" style={{ color: primaryColor }}>
+                              {card.title}
+                            </h3>
+                            <p className="text-xs sm:text-[13px] text-stone-600 leading-relaxed line-clamp-3">
                               {card.description}
                             </p>
                             <div className="pt-1">
                               <a
                                 href={card.ctaLink || '/events-campaigns'}
                                 onClick={(e) => go(e, card.ctaLink || '/events-campaigns')}
-                                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-stone-950 shadow-sm hover:brightness-105 transition-all"
-                                style={{
-                                  background: 'linear-gradient(135deg, #F5B700 0%, #F38B1C 100%)',
-                                }}
+                                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold text-white shadow-xs hover:opacity-95 transition-opacity"
+                                style={{ backgroundColor: primaryColor }}
                               >
                                 <span>{card.ctaLabel || 'View Programme'}</span>
                                 <ArrowRight className="w-3.5 h-3.5" />
@@ -566,25 +639,25 @@ const HomeView: React.FC<{
                       );
                     }
 
-                    // Card 1: Get Involved Teal Card with white-line raised hands illustration
+                    // Card 1: Bright soft-aqua card with teal RaisedHandsGraphic
                     if (i === 1) {
                       return (
                         <div
                           key={i}
-                          className="relative rounded-2xl overflow-hidden text-white shadow-md min-h-[205px] p-6 flex items-center gap-4"
-                          style={{
-                            background: `linear-gradient(135deg, #169E9B 0%, ${card.color || '#0E7C7B'} 60%, #095C5B 100%)`,
-                          }}
+                          className="rounded-2xl bg-[#F0FDFA] border border-[#B2EBF2] shadow-xs hover:shadow-md transition-shadow min-h-[205px] p-6 flex items-center gap-4"
                         >
-                          <RaisedHandsGraphic />
+                          <RaisedHandsGraphic color={secondaryColor} />
                           <div className="space-y-2.5 flex-1">
-                            <h3 className="font-display text-2xl font-bold leading-tight">{card.title}</h3>
-                            <p className="text-xs sm:text-[13px] text-white/90 leading-relaxed">{card.description}</p>
+                            <h3 className="font-display text-xl font-bold leading-tight" style={{ color: secondaryColor }}>
+                              {card.title}
+                            </h3>
+                            <p className="text-xs sm:text-[13px] text-stone-600 leading-relaxed">{card.description}</p>
                             <div className="pt-1">
                               <a
                                 href={card.ctaLink || '/get-involved'}
                                 onClick={(e) => go(e, card.ctaLink || '/get-involved')}
-                                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-white text-stone-900 text-xs font-bold shadow-sm hover:bg-stone-100 transition-colors"
+                                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-xs font-semibold shadow-xs hover:opacity-95 transition-opacity"
+                                style={{ backgroundColor: secondaryColor }}
                               >
                                 <span>{card.ctaLabel || 'Join Us'}</span>
                                 <ArrowRight className="w-3.5 h-3.5" />
@@ -595,24 +668,24 @@ const HomeView: React.FC<{
                       );
                     }
 
-                    // Card 2+: Make a Donation Warm Orange Card with handshake illustration
+                    // Card 2+: Bright warm-ivory card with orange HandshakeGraphic
                     return (
                       <div
                         key={i}
-                        className="relative rounded-2xl overflow-hidden text-white shadow-md min-h-[205px] p-6 flex items-center gap-4"
-                        style={{
-                          background: `linear-gradient(135deg, #F59E0B 0%, ${card.color || '#F38B1C'} 58%, #E06D0D 100%)`,
-                        }}
+                        className="rounded-2xl bg-[#FFF7ED] border border-[#FED7AA] shadow-xs hover:shadow-md transition-shadow min-h-[205px] p-6 flex items-center gap-4"
                       >
-                        <HandshakeGraphic />
+                        <HandshakeGraphic color={accentColor} />
                         <div className="space-y-2.5 flex-1">
-                          <h3 className="font-display text-2xl font-bold leading-tight">{card.title}</h3>
-                          <p className="text-xs sm:text-[13px] text-white/95 leading-relaxed">{card.description}</p>
+                          <h3 className="font-display text-xl font-bold leading-tight" style={{ color: primaryColor }}>
+                            {card.title}
+                          </h3>
+                          <p className="text-xs sm:text-[13px] text-stone-600 leading-relaxed">{card.description}</p>
                           <div className="pt-1">
                             <a
                               href={card.ctaLink || '/donate'}
                               onClick={(e) => go(e, card.ctaLink || '/donate')}
-                              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-white text-[#4A0E36] text-xs font-bold shadow-sm hover:bg-stone-100 transition-colors"
+                              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-white text-xs font-semibold shadow-xs hover:opacity-95 transition-opacity"
+                              style={{ backgroundColor: accentColor }}
                             >
                               <span>{card.ctaLabel || 'Give Hope Today'}</span>
                               <ArrowRight className="w-3.5 h-3.5" />

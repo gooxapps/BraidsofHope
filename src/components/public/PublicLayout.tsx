@@ -13,6 +13,7 @@ import {
   Mail,
   Menu,
   MessageCircle,
+  ShieldCheck,
   Users,
   X,
   Youtube,
@@ -26,6 +27,24 @@ interface PublicLayoutProps {
   currentPath: string;
   onNavigate: (path: string) => void;
   children: React.ReactNode;
+}
+
+function isLightHex(hex?: string): boolean {
+  if (!hex || !hex.startsWith('#')) return true;
+  const clean = hex.slice(1);
+  if (clean.length !== 6 && clean.length !== 3) return true;
+  const full =
+    clean.length === 3
+      ? clean
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : clean;
+  const r = parseInt(full.slice(0, 2), 16);
+  const g = parseInt(full.slice(2, 4), 16);
+  const b = parseInt(full.slice(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.6;
 }
 
 export const PublicLayout: React.FC<PublicLayoutProps> = ({
@@ -58,14 +77,15 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
       if (meta) meta.setAttribute('content', desc);
     }
 
-    if (branding?.favicon_url && isSafeUrl(branding.favicon_url)) {
+    const fav = branding?.favicon_url || '/assets/aistudio/image_654ecb55.png';
+    if (fav && isSafeUrl(fav)) {
       let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
       if (!link) {
         link = document.createElement('link');
         link.rel = 'icon';
         document.head.appendChild(link);
       }
-      link.href = branding.favicon_url;
+      link.href = fav;
     }
 
     const root = document.documentElement;
@@ -139,16 +159,22 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
     return FileText;
   };
 
+  const footerBg = footer?.bg_color || branding?.footer_bg_color || '#FAFAFC';
+  const lightFooter = isLightHex(footerBg);
+  const primaryColor = branding?.primary_color || '#52154E';
+  const secondaryColor = branding?.secondary_color || '#0099A8';
+  const accentColor = branding?.accent_color || '#F57C00';
+
   return (
     <div
       className="min-h-screen flex flex-col"
       style={{
-        backgroundColor: branding?.background_color || '#FAF5EE',
+        backgroundColor: branding?.background_color || '#FFFFFF',
         fontFamily: branding?.body_font ? `'${branding.body_font}', system-ui, sans-serif` : undefined,
       }}
     >
       {isPreview && (
-        <div className="bg-[#0E7C7B] text-white text-xs py-2 px-4 flex items-center justify-between">
+        <div className="bg-[#0099A8] text-white text-xs py-2 px-4 flex items-center justify-between">
           <span>Draft Preview Mode — Showing unpublished edits visible only to signed-in administrators.</span>
           <button
             type="button"
@@ -160,21 +186,18 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
         </div>
       )}
 
-      {/* Top Plum Utility Strip matching reference */}
-      <div
-        className="text-white text-xs py-2 px-4"
-        style={{ backgroundColor: branding?.footer_bg_color || '#3B0A2B' }}
-      >
+      {/* Bright Light Top Utility Strip */}
+      <div className="bg-[#F8FAFC] border-b border-stone-200/80 text-stone-700 text-xs py-2 px-4">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
-            <Heart className="w-3.5 h-3.5 fill-white shrink-0" />
-            <span>
+            <Heart className="w-3.5 h-3.5 shrink-0" style={{ color: accentColor, fill: accentColor }} />
+            <span className="font-medium text-stone-800">
               {siteSettings?.announcement_bar_enabled && siteSettings.announcement_bar_text
                 ? siteSettings.announcement_bar_text
                 : 'Together, we can make a difference'}
             </span>
-            <span className="opacity-40" aria-hidden="true">|</span>
-            <span className="opacity-95">Nigeria 🇳🇬 · Canada 🇨🇦</span>
+            <span className="text-stone-300" aria-hidden="true">|</span>
+            <span className="text-stone-600">Nigeria · Canada</span>
           </div>
           <div className="hidden sm:flex items-center gap-3">
             {socialEntries.map((s) => {
@@ -186,28 +209,30 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="opacity-85 hover:opacity-100"
+                  className="text-stone-600 hover:text-[#52154E] transition-colors"
                 >
                   <Icon className="w-3.5 h-3.5" />
                 </a>
               );
             })}
-            {socialEntries.length > 0 && <span className="opacity-40" aria-hidden="true">|</span>}
-            <span className="opacity-95">Hope · Compassion · Community</span>
+            {socialEntries.length > 0 && <span className="text-stone-300" aria-hidden="true">|</span>}
+            <span className="font-medium" style={{ color: secondaryColor }}>
+              Hope · Compassion · Community
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Main Header matching reference */}
-      <header className="sticky top-0 z-40 border-b border-stone-200/80 bg-[#FFFDF9]/95 backdrop-blur-sm">
+      {/* Crisp White Main Header */}
+      <header className="sticky top-0 z-40 border-b border-stone-200/80 bg-white/95 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-6">
           <a
             href="/"
             onClick={(e) => handleLinkClick(e, '/')}
-            className="shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4A0E36]"
+            className="shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#52154E]"
           >
             <BrandLogo
-              logoUrl={branding?.logo_main_url}
+              logoUrl={branding?.logo_main_url || '/assets/aistudio/image_654ecb55.png'}
               orgName={branding?.org_name || 'BraidsofHope'}
               tagline={branding?.tagline}
               showTagline
@@ -237,7 +262,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                         }
                       }}
                       className={`inline-flex items-center gap-1 text-sm font-medium whitespace-nowrap shrink-0 py-1.5 transition-colors ${
-                        isActive ? 'text-[#4A0E36] font-semibold border-b-2 border-[#F38B1C]' : 'text-stone-800 hover:text-[#4A0E36]'
+                        isActive ? 'text-[#52154E] font-semibold border-b-2 border-[#F57C00]' : 'text-stone-700 hover:text-[#52154E]'
                       }`}
                     >
                       <span>{item.label}</span>
@@ -249,7 +274,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                           <a
                             href={item.href}
                             onClick={(e) => handleLinkClick(e, item.href, item.open_in_new_tab)}
-                            className="block px-4 py-2 text-sm text-stone-700 hover:bg-[#FAF5EE] hover:text-[#4A0E36]"
+                            className="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 hover:text-[#52154E]"
                           >
                             {item.label} Overview
                           </a>
@@ -260,7 +285,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                               target={sub.open_in_new_tab ? '_blank' : undefined}
                               rel={sub.open_in_new_tab ? 'noopener noreferrer' : undefined}
                               onClick={(e) => handleLinkClick(e, sub.href, sub.open_in_new_tab)}
-                              className="block px-4 py-2 text-sm text-stone-700 hover:bg-[#FAF5EE] hover:text-[#4A0E36]"
+                              className="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 hover:text-[#52154E]"
                             >
                               {sub.label}
                             </a>
@@ -280,8 +305,8 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                   onClick={(e) => handleLinkClick(e, item.href, item.open_in_new_tab)}
                   className={`text-sm font-medium whitespace-nowrap shrink-0 py-1.5 transition-colors ${
                     isActive
-                      ? 'text-[#F38B1C] font-semibold border-b-2 border-[#F38B1C]'
-                      : 'text-stone-800 hover:text-[#4A0E36]'
+                      ? 'text-[#F57C00] font-semibold border-b-2 border-[#F57C00]'
+                      : 'text-stone-700 hover:text-[#52154E]'
                   }`}
                 >
                   {item.label}
@@ -296,7 +321,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
               onClick={(e) => handleLinkClick(e, '/donate')}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white shadow-sm transition-transform hover:scale-[1.02] whitespace-nowrap shrink-0"
               style={{
-                background: `linear-gradient(135deg, ${branding?.accent_color || '#F38B1C'} 0%, #F59E0B 100%)`,
+                background: `linear-gradient(135deg, ${accentColor} 0%, #FB923C 100%)`,
               }}
             >
               <Heart className="w-4 h-4 fill-current" />
@@ -314,7 +339,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
         </div>
 
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-stone-200 bg-[#FFFDF9] px-4 py-4 space-y-2">
+          <div className="lg:hidden border-t border-stone-200 bg-white px-4 py-4 space-y-2">
             {navigation.map((item) => (
               <a
                 key={item.id}
@@ -322,7 +347,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                 onClick={(e) => handleLinkClick(e, item.href, item.open_in_new_tab)}
                 className={`block px-3 py-2.5 rounded-lg text-sm font-medium ${
                   currentPath === item.href
-                    ? 'bg-[#4A0E36]/10 text-[#4A0E36] font-semibold'
+                    ? 'bg-[#52154E]/8 text-[#52154E] font-semibold'
                     : 'text-stone-700 hover:bg-stone-100'
                 }`}
               >
@@ -336,47 +361,59 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
       {/* Main Content */}
       <main className="flex-1">{children}</main>
 
-      {/* Deep Plum 5-Column Footer with corner woven ribbon artwork matching reference */}
+      {/* Bright Light Footer (adapts gracefully if admin customizes dark bg) */}
       <footer
-        className="relative overflow-hidden"
+        className={`relative overflow-hidden ${lightFooter ? 'border-t border-stone-200' : ''}`}
         style={{
-          backgroundColor: footer?.bg_color || branding?.footer_bg_color || '#3B0A2B',
-          color: footer?.text_color || branding?.footer_text_color || '#FAF5EE',
+          backgroundColor: footerBg,
+          color: lightFooter ? '#374151' : footer?.text_color || '#FAF5EE',
         }}
       >
-        {/* Subtle bottom-left woven ribbon flourish */}
+        {/* Subtle bottom-left woven ribbon accent */}
         <svg
           viewBox="0 0 420 120"
-          className="pointer-events-none absolute left-0 bottom-0 w-72 sm:w-96 h-24 opacity-90"
+          className={`pointer-events-none absolute left-0 bottom-0 w-72 sm:w-96 h-24 ${
+            lightFooter ? 'opacity-20' : 'opacity-85'
+          }`}
           aria-hidden="true"
         >
-          <path d="M0,15 C110,65 230,30 380,120 L0,120 Z" fill="#0E7C7B" opacity="0.85" />
-          <path d="M0,45 C140,75 240,55 340,120 L0,120 Z" fill="#F38B1C" opacity="0.85" />
-          <path d="M0,78 C95,90 190,82 280,120 L0,120 Z" fill="#D9467A" opacity="0.8" />
+          <path d="M0,15 C110,65 230,30 380,120 L0,120 Z" fill="#0099A8" />
+          <path d="M0,45 C140,75 240,55 340,120 L0,120 Z" fill="#F57C00" />
+          <path d="M0,78 C95,90 190,82 280,120 L0,120 Z" fill="#52154E" />
         </svg>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-0 lg:divide-x lg:divide-white/15">
-          {/* Col 1: Logo & Tagline */}
+        <div
+          className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-0 lg:divide-x ${
+            lightFooter ? 'lg:divide-stone-200' : 'lg:divide-white/15'
+          }`}
+        >
+          {/* Col 1: Logo & Contact */}
           <div className="lg:col-span-3 lg:pr-6 flex flex-col justify-center space-y-3">
             <BrandLogo
-              logoUrl={branding?.logo_footer_url || branding?.logo_light_url || branding?.logo_main_url}
+              logoUrl={branding?.logo_footer_url || branding?.logo_main_url || '/assets/aistudio/image_654ecb55.png'}
               orgName={branding?.org_name || 'BraidsofHope'}
               tagline={branding?.tagline}
-              variant="light"
-              showTagline
+              variant={lightFooter ? 'default' : 'light'}
+              showTagline={false}
               size="md"
             />
-            {(siteSettings?.contact_email || siteSettings?.edmonton_contact) && (
-              <div className="text-xs opacity-75 space-y-1 pt-2">
-                {siteSettings.contact_email && <div>{siteSettings.contact_email}</div>}
-                {siteSettings.edmonton_contact && <div>{siteSettings.edmonton_contact}</div>}
-              </div>
-            )}
+            <p className={`text-xs italic font-display ${lightFooter ? 'text-stone-600' : 'text-white/80'}`}>
+              {branding?.tagline || 'Weaving a tapestry of hope for today and tomorrow.'}
+            </p>
+            <div className={`text-xs space-y-1 pt-1 ${lightFooter ? 'text-stone-600' : 'opacity-80'}`}>
+              <div>{siteSettings?.contact_email || 'braidsofhope@outlook.com'}</div>
+              {siteSettings?.edmonton_contact && <div>{siteSettings.edmonton_contact}</div>}
+            </div>
           </div>
 
           {/* Col 2: Quick Links */}
           <div className="lg:col-span-2 lg:px-6">
-            <h3 className="text-sm font-bold tracking-wide mb-3.5 text-[#F5B700]">Quick Links</h3>
+            <h3
+              className="text-sm font-bold tracking-wide mb-3.5"
+              style={{ color: lightFooter ? primaryColor : '#F5B700' }}
+            >
+              Quick Links
+            </h3>
             <ul className="space-y-2 text-xs">
               {(footer?.quick_links || []).slice(0, 6).map((link, idx) => {
                 const Icon = getQuickLinkIcon(link.href);
@@ -385,9 +422,11 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                     <a
                       href={link.href}
                       onClick={(e) => handleLinkClick(e, link.href)}
-                      className="inline-flex items-center gap-2 opacity-90 hover:opacity-100 hover:underline transition-opacity"
+                      className={`inline-flex items-center gap-2 transition-colors hover:underline ${
+                        lightFooter ? 'text-stone-700 hover:text-[#52154E]' : 'opacity-90 hover:opacity-100'
+                      }`}
                     >
-                      <Icon className="w-3.5 h-3.5 opacity-80 shrink-0" />
+                      <Icon className="w-3.5 h-3.5 opacity-75 shrink-0" style={lightFooter ? { color: secondaryColor } : undefined} />
                       <span>{link.label}</span>
                     </a>
                   </li>
@@ -399,8 +438,13 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
           {/* Col 3: Our Mission */}
           <div className="lg:col-span-3 lg:px-6 flex flex-col justify-between gap-4">
             <div>
-              <h3 className="text-sm font-bold tracking-wide mb-3 text-[#F5B700]">Our Mission</h3>
-              <p className="text-xs opacity-90 leading-relaxed">
+              <h3
+                className="text-sm font-bold tracking-wide mb-3"
+                style={{ color: lightFooter ? primaryColor : '#F5B700' }}
+              >
+                Our Mission
+              </h3>
+              <p className={`text-xs leading-relaxed ${lightFooter ? 'text-stone-600' : 'opacity-90'}`}>
                 {footer?.mission_blurb ||
                   'To bring hope to underprivileged children and families by providing food support, essential items, and compassionate care.'}
               </p>
@@ -409,7 +453,11 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
               <a
                 href="/about-us"
                 onClick={(e) => handleLinkClick(e, '/about-us')}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-[#F5B700]/70 text-xs font-semibold text-white hover:bg-white/10 transition-colors"
+                className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border text-xs font-semibold transition-colors ${
+                  lightFooter
+                    ? 'border-[#52154E]/30 text-[#52154E] hover:bg-[#52154E]/5'
+                    : 'border-[#F5B700]/70 text-white hover:bg-white/10'
+                }`}
               >
                 <span>Learn More</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -421,11 +469,14 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
           <div className="lg:col-span-2 lg:px-6 space-y-3">
             {footer?.show_newsletter !== false && (
               <div>
-                <h3 className="text-sm font-bold tracking-wide mb-2 text-[#F5B700]">
+                <h3
+                  className="text-sm font-bold tracking-wide mb-2"
+                  style={{ color: lightFooter ? primaryColor : '#F5B700' }}
+                >
                   {footer?.newsletter_heading || 'Stay Connected'}
                 </h3>
-                <p className="text-xs opacity-85 mb-3 leading-relaxed">
-                  {footer?.newsletter_subtext || 'Subscribe to our newsletter for updates and impact stories.'}
+                <p className={`text-xs mb-3 leading-relaxed ${lightFooter ? 'text-stone-600' : 'opacity-85'}`}>
+                  {footer?.newsletter_subtext || 'Subscribe to our newsletter for programme updates and community stories.'}
                 </p>
                 <form onSubmit={handleNewsletterSubmit} className="space-y-2">
                   <div className="flex gap-1.5">
@@ -435,18 +486,18 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                       value={nlEmail}
                       onChange={(e) => setNlEmail(e.target.value)}
                       placeholder="Your email address"
-                      className="flex-1 min-w-0 px-2.5 py-1.5 rounded-md bg-white text-stone-900 text-xs placeholder:text-stone-400 focus:outline-none"
+                      className="flex-1 min-w-0 px-2.5 py-1.5 rounded-md bg-white border border-stone-300 text-stone-900 text-xs placeholder:text-stone-400 focus:outline-none focus:border-[#0099A8]"
                     />
                     <button
                       type="submit"
                       disabled={nlStatus === 'submitting'}
                       className="px-3 py-1.5 rounded-md text-xs font-semibold text-white shrink-0"
-                      style={{ backgroundColor: branding?.accent_color || '#F38B1C' }}
+                      style={{ backgroundColor: accentColor }}
                     >
                       {nlStatus === 'submitting' ? '...' : 'Subscribe'}
                     </button>
                   </div>
-                  <label className="flex items-start gap-1.5 text-[10px] opacity-75 leading-tight cursor-pointer">
+                  <label className={`flex items-start gap-1.5 text-[10px] leading-tight cursor-pointer ${lightFooter ? 'text-stone-500' : 'opacity-75'}`}>
                     <input
                       type="checkbox"
                       required
@@ -457,7 +508,17 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                     <span>CASL consent: receive BraidsofHope updates.</span>
                   </label>
                   {nlMessage && (
-                    <p className={`text-[11px] ${nlStatus === 'error' ? 'text-amber-300' : 'text-emerald-300'}`}>
+                    <p
+                      className={`text-[11px] ${
+                        nlStatus === 'error'
+                          ? lightFooter
+                            ? 'text-red-600'
+                            : 'text-amber-300'
+                          : lightFooter
+                            ? 'text-emerald-700'
+                            : 'text-emerald-300'
+                      }`}
+                    >
                       {nlMessage}
                     </p>
                   )}
@@ -476,7 +537,9 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={s.label}
-                      className="w-7 h-7 rounded-full bg-white text-[#3B0A2B] flex items-center justify-center hover:scale-105 transition-transform"
+                      className={`w-7 h-7 rounded-full flex items-center justify-center hover:scale-105 transition-transform ${
+                        lightFooter ? 'bg-white border border-stone-200 text-[#52154E] shadow-xs' : 'bg-white text-[#3B0A2B]'
+                      }`}
                     >
                       <Icon className="w-3.5 h-3.5" />
                     </a>
@@ -488,7 +551,9 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="TikTok"
-                    className="px-2 h-7 rounded-full bg-white text-[#3B0A2B] flex items-center justify-center text-[10px] font-bold"
+                    className={`px-2 h-7 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                      lightFooter ? 'bg-white border border-stone-200 text-[#52154E]' : 'bg-white text-[#3B0A2B]'
+                    }`}
                   >
                     TikTok
                   </a>
@@ -497,38 +562,61 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
             )}
           </div>
 
-          {/* Col 5: Donate CTA block matching reference */}
+          {/* Col 5: Donate CTA block */}
           <div className="lg:col-span-2 lg:pl-6 flex flex-col items-center justify-center text-center space-y-2">
             <a
               href="/donate"
               onClick={(e) => handleLinkClick(e, '/donate')}
               className="group flex flex-col items-center space-y-1.5"
             >
-              <div className="w-11 h-11 rounded-full bg-[#F38B1C]/20 border border-[#F5B700]/50 flex items-center justify-center text-[#F5B700] group-hover:scale-105 transition-transform">
-                <Heart className="w-5 h-5 fill-[#F38B1C] text-[#F5B700]" />
+              <div
+                className={`w-11 h-11 rounded-full flex items-center justify-center group-hover:scale-105 transition-transform ${
+                  lightFooter
+                    ? 'bg-[#FFF7ED] border border-[#F57C00]/40 text-[#F57C00]'
+                    : 'bg-[#F38B1C]/20 border border-[#F5B700]/50 text-[#F5B700]'
+                }`}
+              >
+                <Heart className="w-5 h-5 fill-current" />
               </div>
-              <div className="font-display text-xl font-bold text-white">Donate</div>
-              <div className="text-xs opacity-85 leading-snug max-w-[140px]">
+              <div className={`font-display text-xl font-bold ${lightFooter ? 'text-[#52154E]' : 'text-white'}`}>
+                Donate
+              </div>
+              <div className={`text-xs leading-snug max-w-[140px] ${lightFooter ? 'text-stone-600' : 'opacity-85'}`}>
                 Be the reason for hope today.
               </div>
             </a>
           </div>
         </div>
 
-        {/* Bottom Copyright Strip */}
-        <div className="relative z-10 border-t border-white/10 bg-black/20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs opacity-80">
+        {/* Bottom Copyright Strip with clearance for floating WhatsApp button */}
+        <div
+          className={`relative z-10 border-t ${
+            lightFooter ? 'border-stone-200 bg-white text-stone-600' : 'border-white/10 bg-black/20 opacity-85'
+          }`}
+        >
+          <div
+            className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3.5 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs ${
+              whatsappClean ? 'pb-16 sm:pb-3.5 sm:pr-20' : 'pb-3.5'
+            }`}
+          >
             <span>{footer?.copyright_text || '© 2026 BraidsofHope. All rights reserved.'}</span>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5">
               <a href="/privacy-policy" onClick={(e) => handleLinkClick(e, '/privacy-policy')} className="hover:underline">
                 Privacy Policy
               </a>
               <a href="/terms-conditions" onClick={(e) => handleLinkClick(e, '/terms-conditions')} className="hover:underline">
                 Terms
               </a>
-              <a href="/admin" onClick={(e) => handleLinkClick(e, '/admin')} className="hover:underline">
-                Admin Portal
+              <a
+                href="/admin"
+                onClick={(e) => handleLinkClick(e, '/admin')}
+                className="inline-flex items-center gap-1 hover:underline font-medium"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 opacity-85 shrink-0" />
+                <span>Admin Portal</span>
               </a>
+              <span className="opacity-40 hidden sm:inline" aria-hidden="true">|</span>
+              <span>Developed by Emmanuel Kenny (StaySafelite)</span>
             </div>
           </div>
         </div>
@@ -540,9 +628,9 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Contact BraidsofHope on WhatsApp"
-          className="fixed bottom-5 right-5 z-40 w-12 h-12 rounded-full bg-[#16A34A] text-white shadow-lg flex items-center justify-center hover:scale-105 transition-transform"
+          className="fixed bottom-3.5 right-4 z-40 w-11 h-11 rounded-full bg-[#16A34A] text-white shadow-lg flex items-center justify-center hover:scale-105 transition-transform"
         >
-          <MessageCircle className="w-6 h-6" />
+          <MessageCircle className="w-5 h-5" />
         </a>
       )}
 
@@ -552,7 +640,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
           <button
             type="button"
             onClick={() => setCookieDismissed(true)}
-            className="px-3 py-1.5 rounded-lg bg-[#4A0E36] text-white text-xs font-semibold shrink-0"
+            className="px-3 py-1.5 rounded-lg bg-[#52154E] text-white text-xs font-semibold shrink-0"
           >
             Acknowledge
           </button>

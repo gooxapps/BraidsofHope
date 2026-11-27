@@ -174,10 +174,10 @@ export async function seedInitialData(): Promise<void> {
         contact_form_enabled, newsletter_double_opt_in, newsletter_consent_text
       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25)`,
       [
-        'BraidsofHope — Weaving Hope for Today and Tomorrow',
+        'BraidsofHope — Weaving a Tapestry of Hope for Today and Tomorrow',
         'BraidsofHope is a registered charitable organization in Canada dedicated to bringing hope to underprivileged children and families through food support and essential care.',
         'BraidsofHope | Registered Canadian Charity',
-        'Weaving Hope for Today and Tomorrow. Supporting underprivileged children and families with food support, essential care, and community outreach across Canada and Nigeria.',
+        'Weaving a tapestry of hope for today and tomorrow. Supporting underprivileged children and families with food support, essential care, and community outreach across Canada and Nigeria.',
         '/src/assets/images/hero_children_joy_1795572430838.jpg',
         false,
         'Upcoming Christmas Fundraising Programme — Details coming soon.',
@@ -189,11 +189,11 @@ export async function seedInitialData(): Promise<void> {
         'We use essential cookies to keep this website secure and responsive. You may review our Privacy Policy for details on Canadian privacy compliance.',
         true,
         true,
-        'info@braidsofhope.org',
+        'braidsofhope@outlook.com',
         '',
         '',
         'Edmonton, Alberta, Canada',
-        'Edmonton Chapter — Alberta, Canada (info@braidsofhope.org)',
+        'Edmonton Chapter — Alberta, Canada (braidsofhope@outlook.com)',
         'Nigeria Outreach Coordination — Community Support',
         'Monday – Friday, 9:00 AM – 5:00 PM MST',
         true,
@@ -210,20 +210,23 @@ export async function seedInitialData(): Promise<void> {
       `INSERT INTO branding_settings (
         org_name, tagline, brand_description,
         primary_color, secondary_color, accent_color, background_color, footer_bg_color, footer_text_color,
-        heading_font, body_font
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+        heading_font, body_font, logo_main_url, logo_footer_url, favicon_url
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`,
       [
         'BraidsofHope',
-        'Weaving Hope for Today and Tomorrow.',
+        'Weaving a tapestry of hope for today and tomorrow.',
         'A registered charitable organization in Canada dedicated to bringing hope to underprivileged children and families through food support and essential care.',
-        '#4A0E36',
-        '#0E7C7B',
-        '#F38B1C',
-        '#FAF5EE',
-        '#3B0A2B',
-        '#FAF5EE',
+        '#52154E',
+        '#0099A8',
+        '#F57C00',
+        '#FFFFFF',
+        '#FAFAFC',
+        '#1F2937',
         'Playfair Display',
         'Plus Jakarta Sans',
+        '/assets/aistudio/image_654ecb55.png',
+        '/assets/aistudio/image_654ecb55.png',
+        '/assets/aistudio/image_654ecb55.png',
       ]
     );
   }
@@ -261,6 +264,16 @@ export async function seedInitialData(): Promise<void> {
         description: 'Food Support programme outreach photography.',
         width: 1200,
         height: 900,
+      },
+      {
+        filename: 'braidsofhope-official-logo.png',
+        original_name: 'braidsofhope-logo.png',
+        url: '/assets/aistudio/image_654ecb55.png',
+        folder: 'Brand Assets',
+        alt_text: 'Official BraidsofHope braided heart logo',
+        description: 'Official BraidsofHope organization logo on white background.',
+        width: 1200,
+        height: 750,
       },
       {
         filename: 'campaign_christmas_hope_1795572431573.jpg',
@@ -303,11 +316,11 @@ export async function seedInitialData(): Promise<void> {
         section_key: 'hero',
         section_type: 'hero',
         title: 'Together, We Can Make a Difference',
-        subtitle: 'Weaving Hope for Today and Tomorrow.',
+        subtitle: 'Weaving a tapestry of hope for today and tomorrow.',
         body_text:
           'BraidsofHope is a registered charitable organization in Canada dedicated to bringing hope to underprivileged children and families through food support and essential care.',
         image_url: '/src/assets/images/hero_children_joy_1795572430838.jpg',
-        bg_color: '#4A0E36',
+        bg_color: '#FFFFFF',
         cta_label: 'Donate Now',
         cta_link: '/donate',
         secondary_cta_label: 'Get Involved',
@@ -326,7 +339,7 @@ export async function seedInitialData(): Promise<void> {
         subtitle: 'Guided by dignity, transparency, and community solidarity.',
         body_text: '',
         image_url: '',
-        bg_color: '#FAF5EE',
+        bg_color: '#FFFFFF',
         cta_label: '',
         cta_link: '',
         secondary_cta_label: '',
@@ -346,11 +359,11 @@ export async function seedInitialData(): Promise<void> {
         section_key: 'story_and_work',
         section_type: 'story_and_work',
         title: 'Our Story',
-        subtitle: 'Weaving Hope for Today and Tomorrow',
+        subtitle: 'Weaving a tapestry of hope for today and tomorrow.',
         body_text:
           'BraidsofHope represents the weaving together of acts of kindness, compassion, generosity, and support to create a tapestry of hope for today and tomorrow.',
         image_url: '/src/assets/images/story_hands_heart_1795572431498.jpg',
-        bg_color: '#FAF5EE',
+        bg_color: '#FFFFFF',
         cta_label: 'Learn More About Us',
         cta_link: '/about-us',
         secondary_cta_label: 'Explore Our Work',
@@ -394,7 +407,7 @@ export async function seedInitialData(): Promise<void> {
         subtitle: 'Join our programmes, volunteer efforts, and upcoming seasonal outreach.',
         body_text: '',
         image_url: '/src/assets/images/campaign_christmas_hope_1795572431573.jpg',
-        bg_color: '#FAF5EE',
+        bg_color: '#FFFFFF',
         cta_label: '',
         cta_link: '',
         secondary_cta_label: '',
@@ -406,21 +419,21 @@ export async function seedInitialData(): Promise<void> {
               description: 'Upcoming seasonal outreach to bring joy and support to children and families.',
               ctaLabel: 'View Programme',
               ctaLink: '/events-campaigns',
-              color: '#4A0E36',
+              color: '#52154E',
             },
             {
               title: 'Get Involved',
               description: 'Volunteer, partner, or support our community outreach mission.',
               ctaLabel: 'Join Us',
               ctaLink: '/get-involved',
-              color: '#0E7C7B',
+              color: '#0099A8',
             },
             {
               title: 'Make a Donation',
               description: 'Every contribution helps sustain food support and essential care.',
               ctaLabel: 'Give Hope Today',
               ctaLink: '/donate',
-              color: '#F38B1C',
+              color: '#F57C00',
             },
           ],
         }),
@@ -466,7 +479,7 @@ export async function seedInitialData(): Promise<void> {
       {
         slug: 'home',
         title: 'Home',
-        subtitle: 'Weaving Hope for Today and Tomorrow.',
+        subtitle: 'Weaving a tapestry of hope for today and tomorrow.',
         hero_image_url: '/src/assets/images/hero_children_joy_1795572430838.jpg',
         content_blocks_json: JSON.stringify([
           {
@@ -703,7 +716,7 @@ export async function seedInitialData(): Promise<void> {
         bg_color, text_color
       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
       [
-        'Weaving Hope for Today and Tomorrow.',
+        'Weaving a tapestry of hope for today and tomorrow.',
         '© 2026 BraidsofHope. Registered Charitable Organization in Canada. All rights reserved.',
         'To bring hope to underprivileged children and families by providing food support, essential items, and compassionate care.',
         true,
@@ -726,8 +739,8 @@ export async function seedInitialData(): Promise<void> {
           youtube: '',
           tiktok: '',
         }),
-        '#3B0A2B',
-        '#FAF5EE',
+        '#FAFAFC',
+        '#1F2937',
       ]
     );
   }
@@ -868,6 +881,92 @@ export async function seedInitialData(): Promise<void> {
         'Support seasonal community campaigns, awareness drives, and volunteer coordination.',
         true,
         2,
+      ]
+    );
+  }
+
+  // 12. Non-destructive one-time upgrade for untouched legacy seed defaults
+  await db.execute(
+    `UPDATE site_settings
+     SET contact_email = $1,
+         edmonton_contact = $2,
+         site_title = $3
+     WHERE contact_email = $4`,
+    [
+      'braidsofhope@outlook.com',
+      'Edmonton Chapter — Alberta, Canada (braidsofhope@outlook.com)',
+      'BraidsofHope — Weaving a Tapestry of Hope for Today and Tomorrow',
+      'info@braidsofhope.org',
+    ]
+  );
+
+  await db.execute(
+    `UPDATE branding_settings
+     SET tagline = $1,
+         primary_color = $2,
+         secondary_color = $3,
+         accent_color = $4,
+         background_color = $5,
+         footer_bg_color = $6,
+         footer_text_color = $7,
+         logo_main_url = CASE WHEN logo_main_url = '' THEN $8 ELSE logo_main_url END,
+         logo_footer_url = CASE WHEN logo_footer_url = '' THEN $8 ELSE logo_footer_url END,
+         favicon_url = CASE WHEN favicon_url = '' THEN $8 ELSE favicon_url END
+     WHERE primary_color = $9 AND background_color = $10`,
+    [
+      'Weaving a tapestry of hope for today and tomorrow.',
+      '#52154E',
+      '#0099A8',
+      '#F57C00',
+      '#FFFFFF',
+      '#FAFAFC',
+      '#1F2937',
+      '/assets/aistudio/image_654ecb55.png',
+      '#4A0E36',
+      '#FAF5EE',
+    ]
+  );
+
+  await db.execute(
+    `UPDATE homepage_sections
+     SET bg_color = $1, subtitle = $2
+     WHERE section_key = 'hero' AND bg_color = '#4A0E36'`,
+    ['#FFFFFF', 'Weaving a tapestry of hope for today and tomorrow.']
+  );
+
+  await db.execute(
+    `UPDATE homepage_sections
+     SET bg_color = '#FFFFFF'
+     WHERE section_key IN ('values', 'story_and_work', 'featured_initiatives') AND bg_color = '#FAF5EE'`
+  );
+
+  await db.execute(
+    `UPDATE footer_settings
+     SET description = $1, bg_color = $2, text_color = $3
+     WHERE bg_color = '#3B0A2B' AND text_color = '#FAF5EE'`,
+    ['Weaving a tapestry of hope for today and tomorrow.', '#FAFAFC', '#1F2937']
+  );
+
+  const existingOfficialLogoMedia = await db.queryOne<{ id: number }>(
+    'SELECT id FROM media_files WHERE url = $1 LIMIT 1',
+    ['/assets/aistudio/image_654ecb55.png']
+  );
+  if (!existingOfficialLogoMedia) {
+    await db.execute(
+      `INSERT INTO media_files (filename, original_name, url, mime_type, file_size, width, height, folder, alt_text, description, storage_provider)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+      [
+        'braidsofhope-official-logo.png',
+        'braidsofhope-logo.png',
+        '/assets/aistudio/image_654ecb55.png',
+        'image/png',
+        180000,
+        1200,
+        750,
+        'Brand Assets',
+        'Official BraidsofHope braided heart logo',
+        'Official BraidsofHope organization logo on white background.',
+        'local',
       ]
     );
   }
